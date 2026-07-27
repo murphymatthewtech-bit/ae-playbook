@@ -2,50 +2,63 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Account Playbook</title>
 <style>
-  :root { --navy:#1F3864; --light:#D9E2F3; --grey:#595959; --good:#E2EFDA; --bad:#FCE4E4; }
+  :root { --navy:#1F3864; --light:#D9E2F3; --grey:#595959; --good:#E2EFDA; --bad:#FCE4E4; --amber:#FFF3CD; }
   * { box-sizing: border-box; }
   body { font-family: Arial, Helvetica, sans-serif; margin:0; background:#f4f6fb; color:#1a1a1a; }
-  header { background:var(--navy); color:#fff; padding:24px 32px; }
-  header h1 { margin:0; font-size:24px; }
+  header { background:var(--navy); color:#fff; padding:20px 32px; }
+  header h1 { margin:0; font-size:22px; }
   header p { margin:6px 0 0; color:#c9d6ee; font-size:13px; }
+  .tier-badge { display:inline-block; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.35); border-radius:12px; padding:2px 10px; font-size:11px; font-weight:bold; margin-top:8px; }
   nav { display:flex; flex-wrap:wrap; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; z-index:10; }
-  nav button { flex:1; min-width:120px; padding:14px 8px; border:none; background:none; cursor:pointer; font-size:13px; font-weight:bold; color:var(--grey); border-bottom:3px solid transparent; }
+  nav button { flex:1; min-width:100px; padding:12px 6px; border:none; background:none; cursor:pointer; font-size:12px; font-weight:bold; color:var(--grey); border-bottom:3px solid transparent; }
   nav button.active { color:var(--navy); border-bottom:3px solid var(--navy); }
-  main { max-width:960px; margin:0 auto; padding:24px 32px 60px; }
+  main { max-width:1000px; margin:0 auto; padding:24px 32px 60px; }
   section { display:none; }
   section.active { display:block; }
   h2 { color:var(--navy); border-bottom:2px solid var(--light); padding-bottom:6px; }
   .card { background:#fff; border:1px solid #e2e2e2; border-radius:8px; padding:16px 20px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
   .card h3 { margin-top:0; color:var(--navy); }
   .tag { display:inline-block; font-size:11px; font-weight:bold; padding:2px 8px; border-radius:10px; margin-left:8px; }
-  .tag.confirmed { background:var(--good); color:#256029; }
-  .tag.hypothesis { background:var(--bad); color:#a13a3a; }
+  .tag.confirmed, .tag.verified { background:var(--good); color:#256029; }
+  .tag.hypothesis, .tag.inferred { background:var(--amber); color:#7a5c00; }
+  .tag.unknown { background:var(--bad); color:#a13a3a; }
   table { width:100%; border-collapse:collapse; margin-bottom:16px; background:#fff; }
   th { background:var(--navy); color:#fff; text-align:left; padding:10px; font-size:13px; }
   td { padding:10px; border-bottom:1px solid #eee; font-size:13px; vertical-align:top; }
-  .swot-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .swot-grid .card.strength { border-left:4px solid #2e7d32; }
-  .swot-grid .card.weakness { border-left:4px solid #c62828; }
-  .swot-grid .card.opportunity { border-left:4px solid #1565c0; }
-  .swot-grid .card.threat { border-left:4px solid #ef6c00; }
+  .grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width: 720px) { .grid-2col { grid-template-columns: 1fr; } nav button { min-width:33%; } main { padding:20px 14px 50px; } }
+  .thesis-box { background:#fff; border:2px solid var(--navy); border-radius:10px; padding:20px 24px; margin-bottom:16px; }
+  .thesis-row { margin-bottom:12px; }
+  .thesis-row .label { font-weight:bold; color:var(--navy); font-size:13px; text-transform:uppercase; letter-spacing:.03em; display:block; margin-bottom:3px; }
+  .thesis-row .value { font-size:15px; }
+  .mini-field { margin-bottom:6px; font-size:13px; }
+  .mini-field .k { font-weight:bold; color:var(--navy); }
   .persona-btn { background:var(--light); border:1px solid #b8c9e8; border-radius:6px; padding:8px 14px; margin:4px 6px 4px 0; cursor:pointer; font-weight:bold; color:var(--navy); }
   .persona-btn.active { background:var(--navy); color:#fff; }
   .persona-panel { display:none; margin-top:12px; }
   .persona-panel.active { display:block; }
-  .source-list { font-size:12px; color:var(--grey); word-break:break-all; }
+  .source-list { font-size:12px; color:var(--grey); }
+  .source-list li { margin-bottom:6px; word-break:break-all; }
   ul { padding-left:20px; }
   .email-box { background:#fbfbfb; border:1px dashed #bbb; padding:14px 18px; border-radius:6px; white-space:pre-wrap; font-size:13px; }
+  .subtab-row { margin-bottom:14px; }
+  .subtab-btn { background:#eef2f9; border:1px solid #ccd7ea; border-radius:6px; padding:6px 12px; margin:2px 6px 2px 0; cursor:pointer; font-weight:bold; color:var(--navy); font-size:12px; }
+  .subtab-btn.active { background:var(--navy); color:#fff; }
+  .subtab-panel { display:none; }
+  .subtab-panel.active { display:block; }
 </style>
 </head>
 <body>
 <div style="background:#FCE4E4;border-bottom:2px solid #c62828;padding:10px 24px;font-family:Arial,sans-serif;font-size:13px;color:#7a1f1f;">
-<strong>Illustrative public version:</strong> this example is adapted from a real account-research engagement. The target company's name and some identifying details have been altered for public portfolio sharing; the research process, sourcing approach, and reasoning shown are unchanged from the original.
+<strong>Illustrative public version:</strong> this example is adapted from a real account-research engagement. The target company's name and some identifying details have been altered for public portfolio sharing; the research process, sourcing approach, and reasoning shown are unchanged.
 </div>
 <header>
   <h1 id="hdr-title">Account Playbook</h1>
   <p id="hdr-sub"></p>
+  <span class="tier-badge" id="hdr-tier"></span>
 </header>
 <nav id="tabs"></nav>
 <main id="panels"></main>
@@ -55,12 +68,22 @@ const PLAYBOOK_DATA = {
     "targetCompany": "Genavue (illustrative — name and identifying details altered)",
     "sellerCompany": "Customer.io",
     "preparedBy": "Matthew Murphy",
-    "date": "July 2026"
+    "date": "July 2026",
+    "tier": "Tier 3 — Full Opportunity Playbook"
+  },
+  "thesis": {
+    "whyPursue": "Their own hiring materials describe almost exactly what Customer.io is built for: a CDP-fed, event-driven messaging need across email/SMS/push/in-product for a subscription business. That's a close capability match, not a stretch pitch.",
+    "whyNow": "A senior lifecycle hire is open right now, and a near-identical req was posted and closed earlier without being filled. The tooling decision is plausibly still unmade, and there's a real window to influence it before someone is hired who might default to whichever named competitor tool they already know.",
+    "strongestUseCase": "Turning marketplace/recommendation and key product-milestone events (already flowing through a CDP) into automated, personalized cross-sell messages — replacing what is likely a manual or engineering-dependent process today.",
+    "likelyFailureReason": "The eventual hire already knows one of the named competitor tools well and defaults to it out of familiarity rather than re-opening the tool question. This is a real, not hypothetical, risk given how the posting is worded.",
+    "firstContact": "Whoever currently owns lifecycle marketing on an interim basis — not the not-yet-hired new manager. They're living the pain today and most likely still have influence over what the new hire inherits.",
+    "keyQuestion": "Is the platform decision already made, or is it still open and part of this new hire's mandate? Everything else is secondary until this is answered.",
+    "recommendedAction": "Reach out to the interim owner now, lead with the engineering-dependency angle rather than a feature comparison against named competitors, and use a free trial to prove the use case with synthetic or non-identifying sample data — given the account's data sensitivity — before asking for any platform commitment."
   },
   "snapshot": [
     {
       "label": "What they do",
-      "value": "Direct-to-consumer whole genome sequencing platform: clinical-grade DNA testing, an app/report marketplace (ancestry, health, wellness), AI-enabled interpretation, and lifetime DNA data storage.",
+      "value": "Direct-to-consumer subscription health/wellness platform with a marketplace of add-on reports and services, AI-enabled interpretation, and ongoing data storage.",
       "source": "Company website and public job description, 2026"
     },
     {
@@ -70,39 +93,40 @@ const PLAYBOOK_DATA = {
     },
     {
       "label": "Funding / profitability",
-      "value": "Profitable and venture-backed — single-digit millions raised across rounds from consumer/health-focused VCs. Describes itself as \"profitable, venture-backed\" in its own hiring materials.",
+      "value": "Profitable and venture-backed — single-digit millions raised from consumer/health-focused VCs. Describes itself as \"profitable, venture-backed\" in its own hiring materials.",
       "source": "Public funding databases, 2026"
     },
     {
       "label": "Business model",
-      "value": "Subscription access to a marketplace of paid/free DNA-data apps, alongside one-time test purchases.",
+      "value": "Subscription access to a marketplace of paid/free add-on apps, alongside one-time product purchases.",
       "source": "Third-party product reviews, 2026"
     },
     {
       "label": "Product shape",
-      "value": "Deeply event/behavior-driven: onboarding, new health/ancestry report delivery, app-marketplace recommendations, subscription upsell/cross-sell, win-back, and referral — this exact scope is spelled out in their own hiring materials.",
+      "value": "Deeply event/behavior-driven: onboarding, new report delivery, marketplace recommendations, subscription upsell/cross-sell, win-back, referral — this exact scope is spelled out in their own hiring materials.",
       "source": "Public job description, 2026"
     },
     {
       "label": "Trigger event",
-      "value": "Live, current requisition for a senior lifecycle marketing hire to own email, SMS, push, and in-product messaging end-to-end — a funded, active buying moment.",
+      "value": "Live requisition for a senior lifecycle marketing hire to own email, SMS, push, and in-product messaging end-to-end — a funded, active buying moment.",
       "source": "Public job posting, 2026"
     }
   ],
   "incumbent": {
     "summary": "No confirmed incumbent — the job posting names several possible platforms without preference, and Customer.io is not among them.",
-    "confidence": "Strong signal, not confirmed — verify in discovery",
+    "confidenceLevel": "hypothesis",
+    "confidenceLabel": "Strong signal, not confirmed",
     "evidence": [
       {
-        "point": "Posting requires “expert-level understanding of email and lifecycle platforms” and names several named competitor platforms — none of them Customer.io.",
+        "point": "Posting requires “expert-level understanding of email and lifecycle platforms” and names several competitor platforms — none of them Customer.io.",
         "source": "Public job posting, 2026"
       },
       {
-        "point": "Requires hands-on CDP experience (e.g., Segment) for event tracking and identity resolution — confirms a modern, event-driven data stack already exists that any new messaging tool would need to plug into.",
+        "point": "Requires hands-on CDP experience (e.g., Segment) for event tracking and identity resolution — confirms an event-driven data stack already exists that any new messaging tool would need to plug into.",
         "source": "Same posting"
       },
       {
-        "point": "An earlier, now-closed req for the same function used near-identical tool language, suggesting this hire has been open for some time without landing — possibly a hard-to-fill role rather than a stalled vendor decision.",
+        "point": "An earlier, now-closed req for the same function used near-identical tool language, suggesting this hire has been open for some time — possibly a hard-to-fill role rather than a stalled vendor decision.",
         "source": "Comparison of two postings for the same role, 2026"
       }
     ]
@@ -113,16 +137,13 @@ const PLAYBOOK_DATA = {
       "positioning": "Enterprise-grade platform, strongest for large-scale B2C consumer apps",
       "pricing": "Opaque MAU/profile-based enterprise quotes, commonly mid-5 to 6 figures annually",
       "rating": "4.5/5 (1,400+ reviews, G2)",
-      "strengths": [
-        "Deep enterprise journey orchestration (Canvas)",
-        "Very large reviewer base — strong social proof at enterprise level",
-        "Scales to very large, complex B2C use cases"
-      ],
-      "weaknesses": [
-        "Onboarding ramp reviewers describe as weeks to months",
-        "Canvas UX friction: no multi-select, layout issues, no live HTML preview",
-        "No raw HTML code access in templated emails"
-      ],
+      "incumbentLikelihood": "Low-medium — Braze is enterprise-oriented; a company this size is a scale mismatch unless a past employer of the eventual hire used it.",
+      "winLikelihood": "Low-medium — realistic only if the eventual hire has deep prior Braze experience; otherwise pricing and onboarding timeline are a poor fit for a lean team.",
+      "whyTheyMightPrefer": "If the new hire's strongest résumé line is Braze, familiarity could make it the path of least resistance regardless of fit.",
+      "wedge": "Customer.io's self-serve trial and transparent Essentials pricing let this account prove the use case in days, not the weeks-to-months onboarding ramp Braze reviewers report.",
+      "discoveryQuestion": "“If cost and setup time weren't a factor, would Braze be the platform you'd pick — or is it more that it's the one you already know?”",
+      "whenNotToCompete": "If the account is already mid-implementation with Braze, don't try to unseat it — focus energy on accounts still actively choosing.",
+      "proofPoint": "No direct Braze-displacement case study for this vertical; lead with Customer.io's own product-led-growth case studies instead.",
       "source": "G2/Capterra reviews, 2026"
     },
     {
@@ -130,16 +151,13 @@ const PLAYBOOK_DATA = {
       "positioning": "Sits between Braze and Klaviyo — enterprise depth with more data flexibility",
       "pricing": "Enterprise quote-based, opaque like Braze",
       "rating": "4.3/5 (Capterra, 63 reviews)",
-      "strengths": [
-        "Handles high-volume B2C and complex B2B journeys without major trade-offs",
-        "Intuitive UI/UX for connecting data to campaigns",
-        "Responsive, knowledgeable customer support"
-      ],
-      "weaknesses": [
-        "Reporting lacks depth — only overall/per-campaign analytics out of the box",
-        "Weak visualizations, limited drill-down",
-        "Minor page-load/navigation issues"
-      ],
+      "incumbentLikelihood": "Low — no specific signal beyond being named alongside others in the posting.",
+      "winLikelihood": "Low-medium — reporting gaps are a real weakness for a data-driven company like this, but pricing opacity is the bigger obstacle for a small team.",
+      "whyTheyMightPrefer": "If they anticipate needing B2B-style journeys alongside consumer ones.",
+      "wedge": "Customer.io's transparent pricing is easier to get approved internally than Iterable's opaque enterprise quote process.",
+      "discoveryQuestion": "“Do you need B2B-style journeys alongside consumer ones, or is everything here consumer-facing?”",
+      "whenNotToCompete": "If they have a genuine B2B/partner-facing messaging need, Iterable's strength there may be a real fit.",
+      "proofPoint": "No direct proof point for this account; lead with Customer.io's data-first positioning instead.",
       "source": "G2/Capterra reviews, 2026"
     },
     {
@@ -147,16 +165,13 @@ const PLAYBOOK_DATA = {
       "positioning": "E-commerce-first email/SMS platform, deeply tied to Shopify/DTC retail",
       "pricing": "Usable free plan and sub-$50 tiers, scales quickly with active profile count and add-ons",
       "rating": "4.6/5 (1,100+ reviews, G2)",
-      "strengths": [
-        "Best-in-class Shopify/e-commerce integration depth",
-        "Highest G2 rating among mainstream competitors",
-        "Low-friction entry point, easy to trial"
-      ],
-      "weaknesses": [
-        "Pricing scales faster than expected as profiles grow — most common complaint on G2/Capterra",
-        "Built email/SMS-first — weaker fit for a marketplace/behavioral product like this one",
-        "Steep learning curve for advanced flows"
-      ],
+      "incumbentLikelihood": "Low — Klaviyo is e-commerce/Shopify-first; this account is a marketplace/subscription product, not a retail storefront.",
+      "winLikelihood": "Low — Klaviyo would need significant workaround for in-product/behavioral messaging, which is central to this account's use case.",
+      "whyTheyMightPrefer": "Lower entry price and brand familiarity if a past employer used it for a DTC storefront.",
+      "wedge": "Name the mismatch directly: Klaviyo is built email/SMS-first for purchase events; this account needs push and in-product messaging tied to product milestones, which is Customer.io's strength.",
+      "discoveryQuestion": "“How much of what you need to send is tied to a purchase, versus tied to something happening inside the product itself?”",
+      "whenNotToCompete": "If a large share of their volume really is transactional e-commerce-style email, Klaviyo may be a legitimately strong fit.",
+      "proofPoint": "No direct proof point for this account.",
       "source": "G2 reviews, 2026"
     },
     {
@@ -164,89 +179,112 @@ const PLAYBOOK_DATA = {
       "positioning": "B2C engagement platform with a built-in CDP and AI engine for predictive, behavior-based personalization",
       "pricing": "Volume-based on customer data + message volume, quote-tailored — no self-serve tier",
       "rating": "4.4-4.5/5 (280+ reviews across review sites)",
-      "strengths": [
-        "Built-in CDP plus AI-driven predictive segmentation in one product",
-        "Intuitive drag-and-drop workflow builder, praised for ease of use and support",
-        "Already explicitly on this account's own shortlist per their job posting"
-      ],
-      "weaknesses": [
-        "Steep learning curve and overwhelming initial setup per reviews",
-        "Complexity/resource intensity flagged as a barrier for smaller teams",
-        "No published self-serve pricing — requires a sales-led quote process, slower to start than Customer.io's trial"
-      ],
-      "source": "G2 reviews, 2026"
+      "incumbentLikelihood": "Medium — often the closest philosophical match to what these postings describe (AI-plus-CDP combined).",
+      "winLikelihood": "Medium — likely the strongest alternative on paper.",
+      "whyTheyMightPrefer": "Built-in AI-driven predictive segmentation bundled with the CDP — appealing to a company positioning itself as AI-forward.",
+      "wedge": "Blueshift has no self-serve tier, and reviewers cite a steep learning curve and setup burden — a real risk for a small team hiring its first dedicated lifecycle owner. Customer.io's self-serve trial removes that risk entirely.",
+      "discoveryQuestion": "“Have you already had a Blueshift sales conversation, or are they just on the list of tools you're aware of?”",
+      "whenNotToCompete": "If Blueshift is already deep in a proof-of-concept, this is likely too late to unseat without a specific, provable gap.",
+      "proofPoint": "Customer.io's product-led-growth case studies speak to fast, low-friction adoption — the opposite of the setup burden Blueshift reviewers describe.",
+      "source": "G2 Blueshift reviews, 2026"
     }
   ],
-  "swot": {
-    "strengths": [
-      "This account's own job posting describes almost exactly Customer.io's core strength: event-driven, segmentation-heavy, multi-channel messaging tied to a CDP — a near-direct capability match.",
-      "Customer.io is not on their named shortlist — a genuine chance to introduce a self-serve, transparently-priced option they may not have evaluated yet.",
-      "At this company's size, Customer.io's self-serve entry tier and full API access let a lean team start immediately, unlike competitors with quote-only, more enterprise-leaning sales processes."
-    ],
-    "weaknesses": [
-      "No existing relationship or reference customer in this specific vertical to point to, unlike some competitors' broader brand recognition in consumer health/DTC.",
-      "The posting demands “expert-level” platform fluency — whoever is hired may already have deep hands-on experience with a named competitor and default to recommending what they know.",
-      "Compliance/privacy sensitivity around health-adjacent data may raise a higher bar for security review than a typical DTC subscription business."
-    ],
-    "opportunities": [
-      "This requisition has been open, in one form or another, for some time without being filled — may mean both the hire and the tooling decision are still genuinely open.",
-      "Reaching the hiring manager or interim owner before the new hire is seated creates a chance to get onto the shortlist, rather than only being considered if the new hire happens to bring it up.",
-      "The account's marketplace model (upsell/cross-sell across many product add-ons) is a natural fit for behavioral segmentation — a concrete use case to lead with."
-    ],
-    "threats": [
-      "Several named competitors are already top-of-mind for this hire before Customer.io is even mentioned — real risk of losing mindshare by default.",
-      "A long-open req might mean the hiring manager leans toward whatever tool the strongest candidate already knows, to accelerate time-to-value.",
-      "Compliance requirements around health-adjacent data could slow any vendor's security review regardless of product fit."
-    ]
-  },
+  "stakeholders": [
+    {
+      "role": "Head of Growth / Marketing (likely Economic Buyer)",
+      "likelyResponsibility": "Owns the budget this hire's salary and any new SaaS spend comes from; accountable for the retention/activation metrics the role is measured against.",
+      "publicSignal": "Not named in the posting; inferred from the cross-functional partnership described in the role.",
+      "priorities": "Likely under pressure to show retention/activation gains without major new headcount or long implementation projects.",
+      "influence": "High — final budget sign-off.",
+      "relationshipToOthers": "Likely the hiring manager for the open req; probably relies on Engineering for data feasibility sign-off before committing to a platform.",
+      "whyContact": "Controls the budget and is motivated to solve this before, or independent of, the new hire arriving.",
+      "relevantMessage": "Speed-to-value and lower total cost versus named competitors, not a feature checklist."
+    },
+    {
+      "role": "Interim Lifecycle/Growth Marketing Owner (likely Champion)",
+      "likelyResponsibility": "Currently running whatever lifecycle messaging exists today, on top of their regular role, until the new hire is seated.",
+      "publicSignal": "Inferred — someone has to be covering activation/retention/win-back messaging in the meantime; not confirmed by any specific source.",
+      "priorities": "Wants relief from an unsustainable workload; likely frustrated by manual or engineering-dependent processes.",
+      "influence": "Medium — unlikely to hold final budget authority, but likely real informal influence over what the new hire inherits.",
+      "relationshipToOthers": "Reports to the Head of Growth/Marketing; likely involved in interviewing and onboarding the new hire.",
+      "whyContact": "Most likely to take a meeting now, since they're feeling the pain directly.",
+      "relevantMessage": "Removing engineering dependency and manual work today, not a long-term strategic pitch."
+    },
+    {
+      "role": "Engineering / Data Lead (likely Technical Evaluator)",
+      "likelyResponsibility": "Owns the CDP implementation and the complex event data referenced in the job posting.",
+      "publicSignal": "Job posting explicitly calls out partnering with Engineering on data, event tracking, and tooling improvements.",
+      "priorities": "Wants any new tool to reduce ad hoc engineering requests, not add another integration to maintain.",
+      "influence": "Medium-high on technical fit and compliance sign-off; unlikely to drive the final commercial decision.",
+      "relationshipToOthers": "Peer to the new lifecycle hire once seated; likely holds effective veto power on data/security grounds even without budget authority.",
+      "whyContact": "Needs to be satisfied on API/data-model fit and compliance before any deal closes, regardless of who champions it.",
+      "relevantMessage": "API/webhook access, custom objects, and compliance posture — not marketing language."
+    }
+  ],
   "meddpicc": [
     {
       "letter": "M",
       "label": "Metrics",
-      "known": "No public metrics. Posting explicitly ties the role to activation, engagement, retention, win-back, and referral for subscription products.",
-      "toConfirm": "Current retention/win-back rates, campaign cadence, and how much of today's lifecycle work is manual vs. automated."
+      "known": "No public metrics. Posting ties the role to activation, engagement, retention, win-back, and referral.",
+      "toConfirm": "Current retention/win-back rates, campaign cadence, automation level.",
+      "confidence": "Inferred",
+      "nextAction": "Ask directly on first call: “What's the one metric this hire is being judged on in 12 months?”"
     },
     {
       "letter": "E",
       "label": "Economic Buyer",
-      "known": "Likely a VP/Head of Growth or Marketing that this role reports into — a small company likely has few budget layers.",
-      "toConfirm": "Exact title/name of the budget owner — confirm via discovery or org lookup."
+      "known": "Likely a Head of Growth/Marketing that this role reports into.",
+      "toConfirm": "Exact name and title.",
+      "confidence": "Inferred",
+      "nextAction": "LinkedIn org search for Growth/Marketing leadership titles before first outreach."
     },
     {
       "letter": "D",
       "label": "Decision Criteria",
-      "known": "Posting names several specific CDP-integrated, behavior-driven platforms as acceptable — implies data/event sophistication and multi-channel breadth are baseline requirements, not differentiators.",
-      "toConfirm": "Whether ease-of-use for a lean team, pricing transparency, or AI/predictive features is the actual tiebreaker."
+      "known": "Posting names several CDP-integrated, behavior-driven platforms as acceptable — implies event sophistication and multi-channel breadth are baseline, not differentiators.",
+      "toConfirm": "Actual tiebreaker: ease-of-use, price, or AI features.",
+      "confidence": "Inferred",
+      "nextAction": "Ask directly which named tools, if any, they've already evaluated."
     },
     {
       "letter": "D",
       "label": "Decision Process",
-      "known": "A named hire (not yet filled) would likely operate the platform day to day.",
-      "toConfirm": "Is the platform already selected and this hire will operate it, or is tool selection still open and part of the hire's mandate? Highest-value open question."
+      "known": "A named hire would likely operate the platform day to day.",
+      "toConfirm": "Whether the platform is pre-selected, or tool choice is part of this hire's mandate.",
+      "confidence": "Unknown",
+      "nextAction": "Single highest-priority question — ask the interim owner directly before anyone else."
     },
     {
       "letter": "P",
       "label": "Paper Process",
-      "known": "Profitable and venture-backed — likely has both revenue discipline and funding runway.",
-      "toConfirm": "Standard SaaS procurement: security/privacy review, DPA terms, expected contract length."
+      "known": "Unknown — no reliable public evidence on procurement steps, legal review, security process, or who signs.",
+      "toConfirm": "Standard SaaS procurement questions: security review, DPA/BAA, contract length, signing authority.",
+      "confidence": "Unknown",
+      "nextAction": "Do not assume from company profile; ask directly once a champion is engaged."
     },
     {
       "letter": "I",
       "label": "Identify Pain",
-      "known": "A senior role is being built specifically to own lifecycle end-to-end across every channel — implies this is currently fragmented or under-resourced, despite a CDP already being in place.",
-      "toConfirm": "What's used today, if anything, for each channel, and what's actually broken or missing."
+      "known": "A senior role is being built to own lifecycle end-to-end despite a CDP already in place — implies the current state is fragmented or manual.",
+      "toConfirm": "What's used today for each channel, and what's actually broken.",
+      "confidence": "Inferred",
+      "nextAction": "Use the bucket-question opener on the first call to get problem agreement before assuming specifics."
     },
     {
       "letter": "C",
       "label": "Champion",
-      "known": "No confirmed named champion — likely the eventual hire, or whoever currently owns this function on an interim basis.",
-      "toConfirm": "Identity of the interim owner via discovery, and their real tool preferences."
+      "known": "No confirmed named champion.",
+      "toConfirm": "Identity of the interim owner.",
+      "confidence": "Unknown",
+      "nextAction": "LinkedIn/discovery to identify who currently owns lifecycle messaging on an interim basis."
     },
     {
       "letter": "C",
       "label": "Competition",
-      "known": "Several platforms are directly named as acceptable tool backgrounds — a larger explicit competitive set than most accounts.",
-      "toConfirm": "Whether any is already deployed in a limited/trial capacity, or if this is a genuinely greenfield decision."
+      "known": "Several platforms are named as acceptable tool backgrounds in the posting.",
+      "toConfirm": "Whether any is already in a trial or proof-of-concept.",
+      "confidence": "Inferred",
+      "nextAction": "Ask directly: “Have you already had conversations with any of these vendors?”"
     }
   ],
   "personas": [
@@ -260,7 +298,7 @@ const PLAYBOOK_DATA = {
         },
         {
           "objection": "Our new hire needs deep platform expertise on day one — we can't afford a learning curve.",
-          "rebuttal": "Point to the no-code visual workflow builder and onboarding support — a shorter ramp than the steep learning curve reviewers report for several named competitors, which matters more at a small company than at an enterprise with a dedicated ops team."
+          "rebuttal": "Point to the no-code visual workflow builder, usable immediately on the self-serve entry plan — a shorter ramp than the steep learning curve reviewers report for several named competitors. Worth being upfront that Customer.io's formal onboarding program is a higher-tier benefit, not included at the entry price point."
         }
       ]
     },
@@ -270,17 +308,17 @@ const PLAYBOOK_DATA = {
       "objections": [
         {
           "objection": "How well does this integrate with our existing CDP and complex event data?",
-          "rebuttal": "Full API and webhook access on every plan, plus custom objects designed to model exactly this kind of multi-step, data-rich event."
+          "rebuttal": "Custom objects are designed to model exactly this kind of multi-step, data-rich event. Integration depth varies by plan — worth confirming the specific API/webhook scope needed against the actual plan tier rather than assuming full access everywhere."
         },
         {
           "objection": "We handle sensitive health-adjacent data — compliance is non-negotiable.",
-          "rebuttal": "Customer.io holds GDPR, AICPA SOC, and HIPAA-capable compliance on Premium/Enterprise plans — worth an early, direct conversation with whoever owns privacy/compliance."
+          "rebuttal": "Customer.io's HIPAA-capable compliance, including a Business Associate Agreement, is a higher-tier feature, not included on the entry self-serve plan. For an account handling sensitive data, any trial or pilot should run on synthetic or non-identifying test data until the right agreements and plan tier are in place — worth raising proactively rather than waiting for their security team to catch it."
         }
       ]
     },
     {
       "name": "Finance / procurement-led buyer",
-      "description": "Plausible given the account describes itself as profitable and venture-backed — a team proud of capital efficiency is likely to scrutinize a new recurring SaaS cost carefully.",
+      "description": "Plausible given the account describes itself as “profitable, venture-backed” — a team proud of capital efficiency is likely to scrutinize a new recurring SaaS cost carefully.",
       "objections": [
         {
           "objection": "Other platforms already have enterprise-grade AI features — why pay for something “simpler”?",
@@ -288,7 +326,7 @@ const PLAYBOOK_DATA = {
         },
         {
           "objection": "We'd want to see ROI before committing budget.",
-          "rebuttal": "A free trial with no credit card required lets the team validate real onboarding/win-back flows on real data before any larger commitment — proof before spend, not the reverse."
+          "rebuttal": "A free trial (no credit card required) lets the team validate the core use case first — using synthetic or non-identifying sample data given the sensitivity — before any larger commitment is needed."
         }
       ]
     }
@@ -296,38 +334,131 @@ const PLAYBOOK_DATA = {
   "discoveryQuestions": [
     "[Bucket question — opener] “I talk with lifecycle and growth leads at subscription health/DTC companies a lot, and most of them are dealing with one of three things: picking a messaging platform before they've even hired the person who'll run it, a CDP that's well set up but not yet fully wired into messaging, or a marketplace/upsell motion that's hard to personalize at the individual customer level. Does any of that sound like your world?”",
     "Which of those is closest to where you actually are right now, if any?",
-    "Is the platform decision already made or leaning toward one of the named tools, or is this new hire expected to help make that call?",
+    "Is the platform decision already made or leaning toward a specific tool, or is this new hire expected to help make that call?",
     "How is your CDP being used today — is it feeding any messaging tool yet, or purely internal analytics so far?",
-    "Walk me through what happens today when someone completes a key product milestone — what message do they get, and how automated is it?",
+    "Walk me through what happens today when someone hits a key product milestone — what message do they get, and how automated is it?",
     "Given the sensitivity of the data you handle, what does your vendor security/privacy review process usually look like?",
     "What would “success” look like for this hire's first 90 days with a lifecycle platform fully in place?"
   ],
   "outreach": {
-    "initialSubject": "probably not your first message about this req",
-    "initialBody": "Hi [First Name] — not sure if you're the right person, so feel free to redirect me.\n\nSaw the lifecycle marketing req and figured a company like yours gets fewer generic vendor emails than most, so I'll get to the point.\n\nI talk with lifecycle and growth leads at subscription health/DTC companies fairly often, and most of them are dealing with one of three things: picking a messaging platform before they've even hired the person who'll run it, a CDP that's well set up but not fully wired into messaging yet, or a marketplace/upsell motion that's hard to personalize at the individual customer level. Does any of that sound like your world?\n\nWould it be of interest to see a short example of how a similar subscription/DTC business turns a single customer event into a personalized message without engineering having to build it one-off each time?\n\nMatthew",
-    "followUpSubject": "Re: probably not your first message about this req",
-    "followUpBody": "Hi [First Name] — following up in case this got buried, totally fine if it's not useful right now. Would it still be of interest to see that example, even just async? Either way, good luck with the search."
+    "coldEmail": {
+      "subject": "your CDP data + the new lifecycle hire",
+      "body": "Hi [First Name] — not sure if you're the right person, feel free to redirect me.\n\nSaw the lifecycle marketing req. Companies at your stage hiring for this role often have a CDP that's better wired into analytics than into actual customer messaging yet — genuinely don't know if that's true for you, but worth asking.\n\nWould it be of interest to see a short example of turning a single customer event into an automated, personalized message without an engineering ticket each time?\n\nMatthew"
+    },
+    "linkedin": {
+      "body": "Hi [First Name] — saw the lifecycle marketing req. Curious whether the messaging platform decision is locked in yet or still open — happy to share how a similar subscription business handles this if it'd be useful. No pitch, just comparing notes."
+    },
+    "callOpener": {
+      "body": "Hey [First Name], this is Matthew — I know this is out of the blue, so tell me if now's a bad time.\n\nReason for the call: I talk with lifecycle and growth folks at subscription health businesses a lot, and most of them are dealing with one of three things right now — picking a platform before they've hired the person to run it, a CDP that's not fully wired into messaging yet, or a marketplace/upsell motion that's hard to personalize. Does any of that sound like where you're at?"
+    },
+    "cadence": [
+      {
+        "day": "Day 1",
+        "channel": "Email",
+        "action": "Send the trigger-based cold email above."
+      },
+      {
+        "day": "Day 2",
+        "channel": "LinkedIn",
+        "action": "Send the LinkedIn message; engage with a recent post or update first if one exists."
+      },
+      {
+        "day": "Day 4",
+        "channel": "Call",
+        "action": "Call using the bucket-question opener; leave a voicemail referencing the email if no answer."
+      },
+      {
+        "day": "Day 7",
+        "channel": "Email",
+        "action": "Send a specific insight or competitor-relevant observation rather than repeating the same ask."
+      },
+      {
+        "day": "Day 12",
+        "channel": "Email",
+        "action": "Close-the-loop message: acknowledge no response, leave the door open, then deprioritize."
+      }
+    ]
   },
   "sources": [
-    "Public job posting for this role (identifying URL withheld for this illustrative public version)",
-    "Public company profile (identifying details generalized for this illustrative public version)",
-    "Customer.io platform/pricing — customer.io/solutions/smb-mid-market, customer.io/pricing",
-    "Customer.io competitors self-positioning — customer.io/competitors",
-    "Customer.io case studies — learn.customer.io/case-studies",
-    "Customer.io G2 reviews/pros & cons — g2.com/products/customer-io/reviews?qs=pros-and-cons",
-    "Braze reviews — capterra.com/p/155423/Appboy/reviews/, G2",
-    "Iterable reviews — capterra.com/p/143902/Iterable/reviews/",
-    "Klaviyo reviews — g2.com/products/klaviyo/reviews",
-    "Blueshift reviews — g2.com/products/blueshift/reviews?qs=pros-and-cons",
-    "Discovery/outreach style adapted from Kevin Dorsey's problem-bucket-question, disarming cold-open, and ask-for-interest-CTA methodology — Live Better. Sell Better. / 30 Minutes to President's Club"
+    {
+      "text": "Public job posting for this role (identifying URL withheld for this illustrative public version)",
+      "url": null
+    },
+    {
+      "text": "Public company profile (identifying details generalized for this illustrative public version)",
+      "url": null
+    },
+    {
+      "text": "Customer.io platform/pricing",
+      "url": "https://customer.io/pricing"
+    },
+    {
+      "text": "Customer.io SMB/mid-market solutions page",
+      "url": "https://customer.io/solutions/smb-mid-market"
+    },
+    {
+      "text": "Customer.io competitors self-positioning",
+      "url": "https://customer.io/competitors"
+    },
+    {
+      "text": "Customer.io case studies",
+      "url": "https://learn.customer.io/case-studies"
+    },
+    {
+      "text": "Customer.io G2 reviews/pros & cons",
+      "url": "https://www.g2.com/products/customer-io/reviews?qs=pros-and-cons"
+    },
+    {
+      "text": "Braze reviews — Capterra",
+      "url": "https://www.capterra.com/p/155423/Appboy/reviews/"
+    },
+    {
+      "text": "Iterable reviews — Capterra",
+      "url": "https://capterra.com/p/143902/Iterable/reviews/"
+    },
+    {
+      "text": "Klaviyo reviews — G2",
+      "url": "https://www.g2.com/products/klaviyo/reviews"
+    },
+    {
+      "text": "Blueshift reviews — G2",
+      "url": "https://www.g2.com/products/blueshift/reviews?qs=pros-and-cons"
+    },
+    {
+      "text": "Discovery/outreach style adapted from Kevin Dorsey's problem-bucket-question, disarming cold-open, and ask-for-interest-CTA methodology — Live Better. Sell Better. / 30 Minutes to President's Club",
+      "url": null
+    }
   ]
 };
 
 function el(tag, attrs={}, children=[]) {
   const e = document.createElement(tag);
-  for (const k in attrs) { if (k === "text") e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); }
+  for (const k in attrs) { if (k === "text") e.textContent = attrs[k]; else if (k === "html") e.innerHTML = attrs[k]; else e.setAttribute(k, attrs[k]); }
   children.forEach(c => e.appendChild(c));
   return e;
+}
+
+function renderThesis(d) {
+  const s = el("section", {id:"panel-thesis"});
+  s.appendChild(el("h2", {text:"Account Thesis — my read, not just the research"}));
+  const box = el("div", {class:"thesis-box"});
+  const rows = [
+    ["Why pursue", d.thesis.whyPursue],
+    ["Why now", d.thesis.whyNow],
+    ["Strongest single use case", d.thesis.strongestUseCase],
+    ["Most likely reason this fails", d.thesis.likelyFailureReason],
+    ["First contact, and why", d.thesis.firstContact],
+    ["The one question I need answered before investing more time", d.thesis.keyQuestion],
+    ["Recommended next action", d.thesis.recommendedAction],
+  ];
+  rows.forEach(([label, value]) => {
+    const r = el("div", {class:"thesis-row"});
+    r.appendChild(el("span", {class:"label", text:label}));
+    r.appendChild(el("span", {class:"value", text:value}));
+    box.appendChild(r);
+  });
+  s.appendChild(box);
+  return s;
 }
 
 function renderSnapshot(d) {
@@ -348,7 +479,7 @@ function renderIncumbent(d) {
   s.appendChild(el("h2", {text:"Incumbent / Current-Tool Detection"}));
   const c = el("div", {class:"card"});
   c.appendChild(el("h3", {text: d.incumbent.summary}));
-  c.appendChild(el("span", {class:"tag " + (d.incumbent.confidence.toLowerCase().includes("confirm") ? "confirmed":"hypothesis"), text: d.incumbent.confidence}));
+  c.appendChild(el("span", {class:"tag " + d.incumbent.confidenceLevel, text: d.incumbent.confidenceLabel}));
   const ul = el("ul");
   d.incumbent.evidence.forEach(ev => {
     const li = el("li", {text: ev.point + "  —  " + ev.source});
@@ -361,53 +492,79 @@ function renderIncumbent(d) {
 
 function renderBattlecard(d) {
   const s = el("section", {id:"panel-battlecard"});
-  s.appendChild(el("h2", {text:"Competitive Battlecard"}));
+  s.appendChild(el("h2", {text:"Competitive Battlecard — deal-specific, not generic"}));
   d.battlecard.forEach(comp => {
     const c = el("div", {class:"card"});
     c.appendChild(el("h3", {text: comp.name + "  —  " + comp.positioning}));
     c.appendChild(el("p", {text: "Pricing: " + comp.pricing + "   |   Rating: " + comp.rating}));
-    const sw = el("div", {class:"swot-grid"});
-    const strC = el("div", {class:"card strength"});
-    strC.appendChild(el("h3", {text:"Strengths"}));
-    const sul = el("ul"); comp.strengths.forEach(x => sul.appendChild(el("li", {text:x}))); strC.appendChild(sul);
-    const weakC = el("div", {class:"card weakness"});
-    weakC.appendChild(el("h3", {text:"Weaknesses"}));
-    const wul = el("ul"); comp.weaknesses.forEach(x => wul.appendChild(el("li", {text:x}))); weakC.appendChild(wul);
-    sw.appendChild(strC); sw.appendChild(weakC);
-    c.appendChild(sw);
+    const grid = el("div", {class:"grid-2col"});
+    const left = el("div");
+    [["Likelihood they're the incumbent", comp.incumbentLikelihood],
+     ["Likelihood they win this deal", comp.winLikelihood],
+     ["Why this prospect might prefer them", comp.whyTheyMightPrefer]].forEach(([k,v]) => {
+      const f = el("div", {class:"mini-field"});
+      f.appendChild(el("span", {class:"k", text: k + ": "}));
+      f.appendChild(document.createTextNode(v));
+      left.appendChild(f);
+    });
+    const right = el("div");
+    [["Customer.io's wedge here", comp.wedge],
+     ["Discovery question that exposes the difference", comp.discoveryQuestion],
+     ["When not to compete", comp.whenNotToCompete],
+     ["Proof point to use", comp.proofPoint]].forEach(([k,v]) => {
+      const f = el("div", {class:"mini-field"});
+      f.appendChild(el("span", {class:"k", text: k + ": "}));
+      f.appendChild(document.createTextNode(v));
+      right.appendChild(f);
+    });
+    grid.appendChild(left); grid.appendChild(right);
+    c.appendChild(grid);
     if (comp.source) c.appendChild(el("div", {class:"source-list", text:"Source: " + comp.source}));
     s.appendChild(c);
   });
   return s;
 }
 
-function renderSwot(d) {
-  const s = el("section", {id:"panel-swot"});
-  s.appendChild(el("h2", {text:"Account SWOT (pursuing this deal)"}));
-  const grid = el("div", {class:"swot-grid"});
-  const groups = [["strengths","strength","Strengths"],["weaknesses","weakness","Weaknesses"],["opportunities","opportunity","Opportunities"],["threats","threat","Threats"]];
-  groups.forEach(([key,cls,label]) => {
-    const c = el("div", {class:"card " + cls});
-    c.appendChild(el("h3", {text:label}));
-    const ul = el("ul");
-    d.swot[key].forEach(x => ul.appendChild(el("li", {text:x})));
-    c.appendChild(ul);
-    grid.appendChild(c);
+function renderStakeholders(d) {
+  const s = el("section", {id:"panel-stakeholders"});
+  s.appendChild(el("h2", {text:"Stakeholder Map"}));
+  s.appendChild(el("p", {text:"Role-based, not named individuals — no specific person is claimed without a verified public source.", style:"font-size:12px;color:#595959;font-style:italic;"}));
+  d.stakeholders.forEach(st => {
+    const c = el("div", {class:"card"});
+    c.appendChild(el("h3", {text: st.role}));
+    [["Likely responsibility", st.likelyResponsibility],
+     ["Relevant public signal", st.publicSignal],
+     ["Likely priorities", st.priorities],
+     ["Influence / decision power", st.influence],
+     ["Relationship to other stakeholders", st.relationshipToOthers],
+     ["Why contact them", st.whyContact],
+     ["Message that would land", st.relevantMessage]].forEach(([k,v]) => {
+      const f = el("div", {class:"mini-field"});
+      f.appendChild(el("span", {class:"k", text: k + ": "}));
+      f.appendChild(document.createTextNode(v));
+      c.appendChild(f);
+    });
+    s.appendChild(c);
   });
-  s.appendChild(grid);
   return s;
 }
 
 function renderMeddpicc(d) {
   const s = el("section", {id:"panel-meddpicc"});
-  s.appendChild(el("h2", {text:"MEDDPICC Starter — gap checklist, not a script"}));
+  s.appendChild(el("h2", {text:"MEDDPICC — gap checklist with confidence + next action"}));
   const table = el("table");
-  const thead = el("tr"); ["Element","Known from Research","To Confirm in Discovery"].forEach(h => thead.appendChild(el("th", {text:h}))); table.appendChild(thead);
+  const thead = el("tr");
+  ["Element","Known from Research","To Confirm","Confidence","Next Action"].forEach(h => thead.appendChild(el("th", {text:h})));
+  table.appendChild(thead);
   d.meddpicc.forEach(row => {
     const tr = el("tr");
     tr.appendChild(el("td", {text: row.letter + " — " + row.label}));
     tr.appendChild(el("td", {text: row.known}));
     tr.appendChild(el("td", {text: row.toConfirm}));
+    const confCell = el("td");
+    confCell.appendChild(el("span", {class:"tag " + row.confidence.toLowerCase(), text: row.confidence}));
+    tr.appendChild(confCell);
+    tr.appendChild(el("td", {text: row.nextAction}));
     table.appendChild(tr);
   });
   s.appendChild(table);
@@ -445,7 +602,7 @@ function renderPersonas(d) {
 
 function renderDiscovery(d) {
   const s = el("section", {id:"panel-discovery"});
-  s.appendChild(el("h2", {text:"Discovery Questions (bucket question first)"}));
+  s.appendChild(el("h2", {text:"Discovery Questions"}));
   const ul = el("ul");
   d.discoveryQuestions.forEach(q => ul.appendChild(el("li", {text:q})));
   s.appendChild(ul);
@@ -454,14 +611,54 @@ function renderDiscovery(d) {
 
 function renderOutreach(d) {
   const s = el("section", {id:"panel-outreach"});
-  s.appendChild(el("h2", {text:"Outreach Drafts"}));
-  const c1 = el("div", {class:"card"});
-  c1.appendChild(el("h3", {text:"Initial: " + d.outreach.initialSubject}));
-  c1.appendChild(el("div", {class:"email-box", text: d.outreach.initialBody}));
-  const c2 = el("div", {class:"card"});
-  c2.appendChild(el("h3", {text:"Follow-up: " + d.outreach.followUpSubject}));
-  c2.appendChild(el("div", {class:"email-box", text: d.outreach.followUpBody}));
-  s.appendChild(c1); s.appendChild(c2);
+  s.appendChild(el("h2", {text:"Outreach — by channel, not one script pasted everywhere"}));
+  const btnRow = el("div", {class:"subtab-row"});
+  const panelHost = el("div");
+  const items = [
+    ["email", "Cold Email", () => {
+      const c = el("div", {class:"card"});
+      c.appendChild(el("h3", {text: d.outreach.coldEmail.subject}));
+      c.appendChild(el("div", {class:"email-box", text: d.outreach.coldEmail.body}));
+      return c;
+    }],
+    ["linkedin", "LinkedIn Message", () => {
+      const c = el("div", {class:"card"});
+      c.appendChild(el("div", {class:"email-box", text: d.outreach.linkedin.body}));
+      return c;
+    }],
+    ["call", "Cold-Call Opener", () => {
+      const c = el("div", {class:"card"});
+      c.appendChild(el("div", {class:"email-box", text: d.outreach.callOpener.body}));
+      return c;
+    }],
+    ["cadence", "Multi-Touch Cadence", () => {
+      const table = el("table");
+      const thead = el("tr"); ["Day","Channel","Action"].forEach(h => thead.appendChild(el("th",{text:h}))); table.appendChild(thead);
+      d.outreach.cadence.forEach(row => {
+        const tr = el("tr");
+        tr.appendChild(el("td", {text: row.day}));
+        tr.appendChild(el("td", {text: row.channel}));
+        tr.appendChild(el("td", {text: row.action}));
+        table.appendChild(tr);
+      });
+      return table;
+    }],
+  ];
+  items.forEach(([id, label, renderFn], i) => {
+    const btn = el("button", {class:"subtab-btn" + (i===0?" active":""), text:label});
+    const panel = el("div", {class:"subtab-panel" + (i===0?" active":""), id:"outreach-"+id});
+    panel.appendChild(renderFn());
+    btn.onclick = () => {
+      btnRow.querySelectorAll(".subtab-btn").forEach(b=>b.classList.remove("active"));
+      panelHost.querySelectorAll(".subtab-panel").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      panel.classList.add("active");
+    };
+    btnRow.appendChild(btn);
+    panelHost.appendChild(panel);
+  });
+  s.appendChild(btnRow);
+  s.appendChild(panelHost);
   return s;
 }
 
@@ -469,7 +666,16 @@ function renderSources(d) {
   const s = el("section", {id:"panel-sources"});
   s.appendChild(el("h2", {text:"Sources"}));
   const ul = el("ul", {class:"source-list"});
-  d.sources.forEach(src => ul.appendChild(el("li", {text:src})));
+  d.sources.forEach(src => {
+    const li = el("li");
+    if (src.url) {
+      const a = el("a", {href: src.url, target:"_blank", rel:"noopener", text: src.text});
+      li.appendChild(a);
+    } else {
+      li.textContent = src.text;
+    }
+    ul.appendChild(li);
+  });
   s.appendChild(ul);
   return s;
 }
@@ -478,11 +684,13 @@ function build() {
   const d = PLAYBOOK_DATA;
   document.getElementById("hdr-title").textContent = "Account Playbook — " + d.meta.targetCompany;
   document.getElementById("hdr-sub").textContent = "Prospect for " + d.meta.sellerCompany + "  •  Prepared by " + d.meta.preparedBy + "  •  " + d.meta.date;
+  document.getElementById("hdr-tier").textContent = d.meta.tier;
   const tabs = [
+    ["thesis","Thesis", renderThesis],
     ["snapshot","Snapshot", renderSnapshot],
     ["incumbent","Incumbent", renderIncumbent],
     ["battlecard","Battlecard", renderBattlecard],
-    ["swot","SWOT", renderSwot],
+    ["stakeholders","Stakeholders", renderStakeholders],
     ["meddpicc","MEDDPICC", renderMeddpicc],
     ["personas","Objections", renderPersonas],
     ["discovery","Discovery Qs", renderDiscovery],

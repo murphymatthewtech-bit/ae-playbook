@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SDR Outbound &amp; AI Agent Playbook</title>
+<style>
+  :root { --navy:#1F3864; --light:#D9E2F3; --grey:#595959; --good:#E2EFDA; --bad:#FCE4E4; --amber:#FFF3CD; }
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; margin:0; background:#f4f6fb; color:#1a1a1a; }
+  header { background:var(--navy); color:#fff; padding:20px 32px; }
+  header h1 { margin:0; font-size:22px; }
+  header p { margin:6px 0 0; color:#c9d6ee; font-size:13px; }
+  .tier-badge { display:inline-block; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.35); border-radius:12px; padding:2px 10px; font-size:11px; font-weight:bold; margin-top:8px; }
+  nav { display:flex; flex-wrap:wrap; background:#fff; border-bottom:1px solid #ddd; position:sticky; top:0; z-index:10; }
+  nav button { flex:1; min-width:100px; padding:12px 6px; border:none; background:none; cursor:pointer; font-size:12px; font-weight:bold; color:var(--grey); border-bottom:3px solid transparent; }
+  nav button.active { color:var(--navy); border-bottom:3px solid var(--navy); }
+  main { max-width:1000px; margin:0 auto; padding:24px 32px 60px; }
+  section { display:none; }
+  section.active { display:block; }
+  h2 { color:var(--navy); border-bottom:2px solid var(--light); padding-bottom:6px; }
+  .card { background:#fff; border:1px solid #e2e2e2; border-radius:8px; padding:16px 20px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .card h3 { margin-top:0; color:var(--navy); }
+  .tag { display:inline-block; font-size:11px; font-weight:bold; padding:2px 8px; border-radius:10px; margin-left:8px; }
+  .tag.confirmed, .tag.verified { background:var(--good); color:#256029; }
+  .tag.hypothesis, .tag.inferred { background:var(--amber); color:#7a5c00; }
+  .tag.unknown { background:var(--bad); color:#a13a3a; }
+  table { width:100%; border-collapse:collapse; margin-bottom:16px; background:#fff; }
+  th { background:var(--navy); color:#fff; text-align:left; padding:10px; font-size:13px; }
+  td { padding:10px; border-bottom:1px solid #eee; font-size:13px; vertical-align:top; }
+  .grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width: 720px) { .grid-2col { grid-template-columns: 1fr; } nav button { min-width:33%; } main { padding:20px 14px 50px; } }
+  .thesis-box { background:#fff; border:2px solid var(--navy); border-radius:10px; padding:20px 24px; margin-bottom:16px; }
+  .thesis-row { margin-bottom:12px; }
+  .thesis-row .label { font-weight:bold; color:var(--navy); font-size:13px; text-transform:uppercase; letter-spacing:.03em; display:block; margin-bottom:3px; }
+  .thesis-row .value { font-size:15px; }
+  .mini-field { margin-bottom:6px; font-size:13px; }
+  .mini-field .k { font-weight:bold; color:var(--navy); }
+  .source-list { font-size:12px; color:var(--grey); }
+  .source-list li { margin-bottom:6px; word-break:break-all; }
+  ul { padding-left:20px; }
+  .prompt-box { background:#0f1b33; color:#dfe8fb; border-radius:8px; padding:18px 22px; white-space:pre-wrap; font-family:"SF Mono",Consolas,monospace; font-size:12.5px; line-height:1.6; }
+  .subtab-row { margin-bottom:14px; }
+  .subtab-btn { background:#eef2f9; border:1px solid #ccd7ea; border-radius:6px; padding:6px 12px; margin:2px 6px 2px 0; cursor:pointer; font-weight:bold; color:var(--navy); font-size:12px; }
+  .subtab-btn.active { background:var(--navy); color:#fff; }
+  .subtab-panel { display:none; }
+  .subtab-panel.active { display:block; }
+  .day-badge { display:inline-block; background:var(--light); color:var(--navy); font-weight:bold; font-size:11px; padding:3px 9px; border-radius:10px; margin-right:8px; }
+</style>
+</head>
+<body>
+<div style="background:#FCE4E4;border-bottom:2px solid #c62828;padding:10px 24px;font-family:Arial,sans-serif;font-size:13px;color:#7a1f1f;">
+<strong>Illustrative public version:</strong> this example is adapted from a real SDR Agent Manager job application. The target company's name and some identifying details have been altered for public portfolio sharing; the framework, structure, and reasoning shown are unchanged.
+</div>
+<header>
+  <h1 id="hdr-title">SDR Outbound &amp; AI Agent Playbook</h1>
+  <p id="hdr-sub"></p>
+  <span class="tier-badge" id="hdr-tier"></span>
+</header>
+<nav id="tabs"></nav>
+<main id="panels"></main>
+<script>
+const SDR_DATA = {
+  "meta": {
+    "role": "SDR Agent Manager",
+    "company": "Vertexa Health (illustrative, name and identifying details altered)",
+    "candidate": "Matthew Murphy",
+    "date": "July 2026",
+    "tier": "Full role playbook: cadence, objection handling, AI agent operating instructions, performance framework, 30-60-90 plan"
+  },
+  "thesis": {
+    "whyThisRole": "This role is a chance to manage the exact model this company already sells: AI agents doing high-stakes, trust-sensitive outreach at scale. The company built its own AI agent platform to let AI engage physicians ethically and effectively. This role asks someone to apply that same discipline internally, to outbound sales. That is a rare, direct match between what the company believes in and what the job actually is.",
+    "approach": "Treat AI agents as a junior rep whose reps I review every week, not a black box. Reserve human outbound work for accounts where automation cannot yet personalize well (named strategic accounts, complex compliance-sensitive brands), and let the AI agents run high-volume, well-understood segments where there is enough data to trust the pattern.",
+    "strongestLeverage": "The fastest lever available is tightening the feedback loop between agent-sent messages and real outcomes. Most AI SDR programs improve slowly because nobody is closing the loop from reply data back into the prompt every week. A disciplined, versioned prompt-review cadence is probably the single highest-leverage change available in the first month.",
+    "likelyChallenge": "Pharma and biotech marketing buyers are compliance-cautious by default, and an AI-written cold outreach message that reads as even slightly generic or over-claims will get flagged internally before it gets a reply. The agent has to sound more careful and more specific than a typical SaaS SDR agent, not less.",
+    "firstPriority": "Read every agent-sent message and every reply from the last 60 days before changing anything. Understand what is already working before touching the prompt.",
+    "keyQuestion": "What is the current agent's actual reply rate and meeting rate by persona and by message variant, and has anyone segmented that data yet, or is it only being read in aggregate?",
+    "recommendedFirstMove": "Sit with the AI and engineering team in week one to see the current prompt and workflow end to end, then propose the first versioned revision only after reviewing a full cycle of real outcomes."
+  },
+  "personas": [
+    {
+      "role": "Brand / Marketing Director (Pharma or Biotech)",
+      "likelyTitle": "VP or Director, Marketing (specific brand or franchise)",
+      "priorities": "Prescription lift and HCP engagement for their brand, marketing ROI they can defend internally, staying ahead of competitor share of voice with physicians",
+      "painPoints": "Field force reach is limited and expensive per physician touch. Digital engagement often feels like noise physicians ignore. Hard to prove which channel actually moved a prescribing decision.",
+      "whatLands": "A specific, sourced way this brand's target physicians are underserved today, not a generic platform pitch. A reference to a comparable brand's own public description of coupling innovation and intentionality in physician engagement, if a similar quote exists for this company.",
+      "channel": "Email first, LinkedIn as a warm-up touch",
+      "typicalObjection": "We already have Veeva CRM Engage and a rep-triggered email program"
+    },
+    {
+      "role": "Commercial / Field Operations Lead",
+      "likelyTitle": "Director or VP, Commercial Operations",
+      "priorities": "Protecting field force relationships and territory structure, clean Sunshine Act and compliance reporting, measurable incremental reach beyond what reps already cover",
+      "painPoints": "Worried new digital channels create confusion or channel conflict with reps. Needs any new vendor to be provably additive, not cannibalizing.",
+      "whatLands": "Clear positioning as a complement to field reps for physicians reps cannot reach often enough, with a compliance-first design",
+      "channel": "Cold call after a warm email, since this persona is skeptical of unsolicited email pitches",
+      "typicalObjection": "Our field reps already own this relationship"
+    },
+    {
+      "role": "Digital / Omnichannel Marketing Lead",
+      "likelyTitle": "Director, Digital or Omnichannel Marketing",
+      "priorities": "Making the existing MarTech stack (Veeva, Salesforce Marketing Cloud, and similar) work harder, being seen internally as the person driving the digital-first agenda",
+      "painPoints": "Evaluated on whether new tools actually integrate cleanly, not just perform well in a demo. Skeptical of another point solution to manage.",
+      "whatLands": "A technical, integration-first conversation rather than a marketing pitch, with proof the platform plugs into what they already run",
+      "channel": "LinkedIn first, this persona is more likely to engage with a peer-to-peer technical message",
+      "typicalObjection": "How does this actually integrate with what we already have, and who owns it internally?"
+    },
+    {
+      "role": "Medical Affairs / MLR Compliance Influencer",
+      "likelyTitle": "Associate Director, Medical Affairs or Regulatory/Legal review",
+      "priorities": "Making sure any physician-facing content and claims survive Medical-Legal-Regulatory review, not being the reason a program gets delayed",
+      "painPoints": "Sees every new physician-facing channel as new review workload and new risk exposure",
+      "whatLands": "Not usually the first contact. Brought in once a marketing sponsor is already engaged, with a clear answer on how content is reviewed and controlled before it reaches a physician.",
+      "channel": "Not a cold outreach target, looped in by the internal champion",
+      "typicalObjection": "How is content approved before it reaches a physician, and who is accountable if something is wrong?"
+    }
+  ],
+  "cadence": [
+    {
+      "day": "1",
+      "channel": "Email",
+      "action": "Personalized first-touch email, one clear hypothesis about their gap",
+      "purpose": "Establish relevance immediately, before asking for anything"
+    },
+    {
+      "day": "1",
+      "channel": "LinkedIn",
+      "action": "Connection request, no pitch in the note",
+      "purpose": "Build a second surface for contact without adding pitch pressure"
+    },
+    {
+      "day": "3",
+      "channel": "LinkedIn",
+      "action": "Light value-add comment or share, still no direct ask",
+      "purpose": "Stay visible without becoming another sales DM"
+    },
+    {
+      "day": "5",
+      "channel": "Cold call",
+      "action": "Bucket-question opener naming three likely problems",
+      "purpose": "Get a real reaction fast, on a channel email cannot replicate"
+    },
+    {
+      "day": "7",
+      "channel": "Email",
+      "action": "New angle, a different hypothesis than day 1",
+      "purpose": "Test whether the first hypothesis, not the channel, was the problem"
+    },
+    {
+      "day": "9",
+      "channel": "LinkedIn",
+      "action": "Soft message asking if a short example would be of interest",
+      "purpose": "Ask for interest, not a meeting, to lower the commitment bar"
+    },
+    {
+      "day": "12",
+      "channel": "Cold call",
+      "action": "Second attempt, referencing the earlier email and LinkedIn touches",
+      "purpose": "Show continuity rather than restarting the pitch from zero"
+    },
+    {
+      "day": "14",
+      "channel": "Email",
+      "action": "Share one relevant proof point or comparable use case",
+      "purpose": "Give a reason to re-engage that is not just persistence"
+    },
+    {
+      "day": "18",
+      "channel": "Email",
+      "action": "Breakup email, low-pressure close of the loop",
+      "purpose": "Respect their time and leave the door open without nagging"
+    },
+    {
+      "day": "21",
+      "channel": "CRM",
+      "action": "Move to a quarterly re-engagement track rather than deleting",
+      "purpose": "Preserve the relationship for the next trigger event or budget cycle"
+    }
+  ],
+  "objections": {
+    "call": [
+      {
+        "objection": "We already have Veeva CRM Engage and rep-triggered emails for this.",
+        "rebuttal": "Acknowledge it directly and reframe: Vertexa Health is not replacing rep-triggered email, it is reaching the physicians reps cannot get in front of often enough or at all, especially community and rural physicians the field force cannot economically cover. Ask which brands or territories currently have the thinnest field coverage."
+      },
+      {
+        "objection": "Our field reps already own the physician relationship, we don't want to create confusion.",
+        "rebuttal": "Name this concern directly rather than argue past it. Vertexa Health is built to extend reach into physicians the reps rarely see, not to insert a second message into a relationship the rep already owns well. Ask how they currently measure reach gaps by territory."
+      },
+      {
+        "objection": "This would need to go through MLR review, that's a long process.",
+        "rebuttal": "Agree that MLR review is real and should happen. Ask whether the blocker is content review speed or the lack of a clear internal process for a new channel, since those have different fixes, and offer to bring a compliance-focused one-pager to that conversation rather than trying to skip it."
+      },
+      {
+        "objection": "We don't have budget for a new vendor this quarter.",
+        "rebuttal": "Do not push on budget in the first call. Ask what would need to be true for this to be worth prioritizing next planning cycle, and offer a no-cost pilot conversation instead of a sales pitch, so it costs them time, not budget, to explore."
+      },
+      {
+        "objection": "How is this actually different from Doximity or Sermo?",
+        "rebuttal": "Answer directly and specifically rather than deflect. Those are panel and insight platforms built around physician-initiated engagement and surveys. Vertexa Health is built around ethically connecting physicians to pharma-provided resources in the moment a physician needs them, not just gathering physician opinion. Offer to show one concrete example."
+      }
+    ],
+    "email": [
+      {
+        "objection": "Not interested, we have this covered.",
+        "rebuttal": "Acknowledge it in one line, ask a single sharp question about coverage gaps in underserved or rural territories rather than re-pitching, and close by asking if a short example would be of interest."
+      },
+      {
+        "objection": "Send me more information.",
+        "rebuttal": "Resist sending a generic deck. Reply with one specific, relevant example, ideally a named comparable brand's use case, plus one clarifying question about their current biggest physician-reach gap, to keep it a conversation rather than a document dump."
+      },
+      {
+        "objection": "We're mid-cycle with another vendor evaluation.",
+        "rebuttal": "Do not compete for attention right now. Ask when the current evaluation concludes and offer to check back at that specific point rather than continuing to email into a closed window."
+      },
+      {
+        "objection": "This looks like a mass email.",
+        "rebuttal": "This means the personalization did not land. Treat it as direct signal to revise the opening line to reference something specific and true about their brand or team, not as a reason to push back on the prospect."
+      }
+    ],
+    "linkedin": [
+      {
+        "objection": "Wrong person, try someone else on my team.",
+        "rebuttal": "Thank them, ask for the right name and title if they are willing to share it, and confirm it is actually worth pursuing that referral before adding the new name to the same sequence blindly."
+      },
+      {
+        "objection": "We're happy with our current approach.",
+        "rebuttal": "Accept it at face value and ask one specific question about how they currently measure reach into physicians their field force cannot cover often, since that is usually the real gap even at satisfied accounts."
+      },
+      {
+        "objection": "Not the right time.",
+        "rebuttal": "Ask what would make it the right time, a budget cycle, a campaign launch, a leadership change, and set a specific, dated follow-up rather than a vague ping in three months."
+      },
+      {
+        "objection": "No response after connection accepted.",
+        "rebuttal": "Do not immediately pitch after a connection is accepted. Send one relevant, specific piece of value first, an insight, a proof point, a question about their world, and treat continued silence after that as the real signal to slow the cadence, not to increase pressure."
+      }
+    ]
+  },
+  "agentPrompt": {
+    "intro": "This is written the way I would actually version and hand off an operating prompt to the AI SDR agent, not a marketing description of one. It is the kind of artifact I would maintain and revise weekly based on real outcome data.",
+    "systemPrompt": "You are an outbound SDR agent for Vertexa Health, an AI-powered HCP engagement platform used by pharmaceutical and biotech companies to ethically connect physicians to pharma resources.\n\nYour job: identify likely-fit contacts at pharmaceutical and biotech companies, personalize a first-touch message grounded in something specific and true about their brand or team, and book a qualified introductory call. You do not close deals or negotiate terms.\n\nIdeal customer profile: Marketing, Commercial, or Digital/Omnichannel leaders at pharmaceutical or biotech companies with an approved HCP-facing brand or franchise. Strong signals include a named brand or therapeutic area, existing use of Veeva CRM Engage or a similar rep-triggered channel, and any public signal of investment in digital or omnichannel physician engagement.\n\nPersonalization rule: every first-touch message must reference one specific, verifiable fact about the account, a named brand, a public statement about physician engagement strategy, a recent launch or expansion. If no such fact is available, do not send. Flag the account for manual research instead.\n\nTone: direct, specific, and understated. Never use superlative claims about outcomes we have not independently verified for this exact account. Write the way a knowledgeable peer would write, not the way a marketing brochure would write.",
+    "toneRules": [
+      "State one clear hypothesis about the account's likely gap, not three.",
+      "Never claim a specific ROI or lift number unless it is sourced from a real, named case study.",
+      "Ask for interest in seeing an example, not for a meeting time, on the first two touches.",
+      "Keep first-touch emails under 90 words."
+    ],
+    "neverDo": [
+      "Never state or imply a clinical or efficacy claim about a pharma product. Route any message that touches clinical claims to a human for MLR-safe language.",
+      "Never send a third touch on the same channel without a reply.",
+      "Never reuse the exact same opening line across more than 20 percent of a single week's sends, to avoid pattern fatigue and spam flags.",
+      "Never continue a cadence past a clear negative signal such as 'not interested' without human review."
+    ],
+    "escalation": [
+      "A prospect asks a compliance, regulatory, or MLR-process question.",
+      "A prospect asks for pricing, contract terms, or a legal document.",
+      "A reply contains strong negative sentiment or a complaint.",
+      "A reply comes from a persona not yet mapped to an existing playbook entry."
+    ],
+    "abTest": "Test exactly one variable per send, subject line or opening line, never both in the same batch. Require a minimum of roughly 200 sends per variant before declaring a winner, and log every test, hypothesis, variant A, variant B, reply rate, meeting rate, decision, in a versioned change log so every prompt revision is traceable back to the data that justified it."
+  },
+  "performance": {
+    "metrics": [
+      {
+        "metric": "Reply rate",
+        "definition": "Replies divided by messages delivered, by channel and by persona",
+        "why": "The earliest signal that personalization and targeting are working, before any meeting is booked"
+      },
+      {
+        "metric": "Positive reply rate",
+        "definition": "Replies that are not a flat no, divided by total replies",
+        "why": "Distinguishes genuine interest from polite deflection, which raw reply rate hides"
+      },
+      {
+        "metric": "Meetings booked",
+        "definition": "Qualified meetings booked per week, by channel and by agent versus human-run touch",
+        "why": "The core output metric tied directly to pipeline"
+      },
+      {
+        "metric": "Show rate",
+        "definition": "Meetings held divided by meetings booked",
+        "why": "A low show rate usually means the meeting was booked on a weak commitment, a messaging problem more than a scheduling one"
+      },
+      {
+        "metric": "Cost per meeting",
+        "definition": "Fully loaded cost of the AI agent plus manual outbound time, divided by meetings booked",
+        "why": "The metric that actually proves the AI agent model is working financially, not just generating activity"
+      }
+    ],
+    "optimizationLoop": "Weekly: pull every agent-sent message and its outcome from the last seven days, segment by persona and by message variant, identify the top and bottom quartile patterns, and translate the top-performing patterns into a specific, versioned prompt change rather than a vague instruction like 'be more personal.' Ship one change at a time so the next week's data can attribute the effect to something specific. Keep a running change log so any regression can be traced back to the exact revision that caused it.",
+    "experiments": [
+      {
+        "hypothesis": "Referencing a named comparable brand's use case in the first line outperforms a generic value statement",
+        "test": "Split first-touch emails to the Brand/Marketing persona into two variants, only one has a case reference",
+        "measure": "Reply rate and positive reply rate after 200 sends per variant"
+      },
+      {
+        "hypothesis": "A shorter cadence (7 touches over 2 weeks) converts better for the Commercial Operations persona than the standard 10-touch cadence",
+        "test": "Run both cadences against a matched sample of accounts",
+        "measure": "Meetings booked per 100 accounts worked"
+      },
+      {
+        "hypothesis": "Leading with a compliance-first framing improves reply rate from Medical Affairs adjacent contacts",
+        "test": "Test a compliance-first opening versus a reach and engagement-first opening",
+        "measure": "Reply rate and escalation rate"
+      }
+    ]
+  },
+  "plan": {
+    "day30": "Review every agent-sent message and outcome from the prior 60 days before making changes. Shadow the AI and engineering team's current workflow and prompt end to end. Learn the existing stack, HubSpot CRM, sequencing tools, and Clay or similar enrichment. Start manual outbound immediately in parallel on a small set of strategic accounts to build personal pipeline while the audit is underway.",
+    "day60": "Ship the first versioned round of agent prompt and workflow revisions based on the 30-day audit, each tied to a specific data-backed hypothesis. Stand up the weekly optimization review cadence. Build out the full persona-specific cadence library and objection-handling reference so manual outreach and the agent are working from the same playbook.",
+    "day90": "Have a running, versioned experimentation log with at least two completed A/B tests and a documented lift in reply rate or meeting rate over the 30-day baseline. Have a clear, working escalation process between the agent and human review. Be contributing a meaningful, countable share of new qualified meetings personally through manual outreach on accounts the agent should not yet touch."
+  },
+  "sources": [
+    {
+      "text": "Company overview (identifying URL withheld for this public illustrative version)",
+      "url": null
+    },
+    {
+      "text": "Company AI agent platform launch announcement (identifying URL withheld for this public illustrative version)",
+      "url": null
+    },
+    {
+      "text": "Industry press coverage of company's growth ranking (identifying URL withheld for this public illustrative version)",
+      "url": null
+    },
+    {
+      "text": "Founder background and funding interview (identifying URL withheld for this public illustrative version)",
+      "url": null
+    },
+    {
+      "text": "AI HCP engagement platform landscape, competitor comparison",
+      "url": "https://intuitionlabs.ai/articles/ai-hcp-engagement-platforms-pharma-comparison"
+    },
+    {
+      "text": "Customer quote referenced in persona research (identifying URL withheld for this public illustrative version)",
+      "url": null
+    },
+    {
+      "text": "SDR Agent Manager job posting, required tools and qualifications (identifying URL withheld for this public illustrative version)",
+      "url": null
+    }
+  ]
+};
+
+function el(tag, attrs={}, children=[]) {
+  const e = document.createElement(tag);
+  for (const k in attrs) { if (k === "text") e.textContent = attrs[k]; else if (k === "html") e.innerHTML = attrs[k]; else e.setAttribute(k, attrs[k]); }
+  children.forEach(c => e.appendChild(c));
+  return e;
+}
+
+function renderThesis(d) {
+  const s = el("section", {id:"panel-thesis"});
+  s.appendChild(el("h2", {text:"Manager's Thesis: how I'd approach this role"}));
+  const box = el("div", {class:"thesis-box"});
+  const rows = [
+    ["Why this role", d.thesis.whyThisRole],
+    ["My approach to the human plus AI blend", d.thesis.approach],
+    ["Strongest point of leverage", d.thesis.strongestLeverage],
+    ["Most likely reason this is hard", d.thesis.likelyChallenge],
+    ["First priority in the first two weeks", d.thesis.firstPriority],
+    ["The one open question that matters most", d.thesis.keyQuestion],
+    ["Recommended first move", d.thesis.recommendedFirstMove],
+  ];
+  rows.forEach(([label, value]) => {
+    const r = el("div", {class:"thesis-row"});
+    r.appendChild(el("span", {class:"label", text:label}));
+    r.appendChild(el("span", {class:"value", text:value}));
+    box.appendChild(r);
+  });
+  s.appendChild(box);
+  return s;
+}
+
+function renderPersonas(d) {
+  const s = el("section", {id:"panel-personas"});
+  s.appendChild(el("h2", {text:"Buyer Personas"}));
+  d.personas.forEach(p => {
+    const c = el("div", {class:"card"});
+    c.appendChild(el("h3", {text: p.role}));
+    [["Likely title", p.likelyTitle],
+     ["Priorities", p.priorities],
+     ["Pain points", p.painPoints],
+     ["What lands with them", p.whatLands],
+     ["Preferred channel", p.channel],
+     ["Typical first objection", p.typicalObjection]].forEach(([k,v]) => {
+      const f = el("div", {class:"mini-field"});
+      f.appendChild(el("span", {class:"k", text: k + ": "}));
+      f.appendChild(document.createTextNode(v));
+      c.appendChild(f);
+    });
+    s.appendChild(c);
+  });
+  return s;
+}
+
+function renderCadence(d) {
+  const s = el("section", {id:"panel-cadence"});
+  s.appendChild(el("h2", {text:"Outbound Cadence"}));
+  const table = el("table");
+  const thead = el("tr");
+  ["Day","Channel","Action","Purpose"].forEach(h => thead.appendChild(el("th", {text:h})));
+  table.appendChild(thead);
+  d.cadence.forEach(row => {
+    const tr = el("tr");
+    tr.appendChild(el("td", {html: '<span class="day-badge">Day ' + row.day + '</span>'}));
+    tr.appendChild(el("td", {text: row.channel}));
+    tr.appendChild(el("td", {text: row.action}));
+    tr.appendChild(el("td", {text: row.purpose}));
+    table.appendChild(tr);
+  });
+  s.appendChild(table);
+  return s;
+}
+
+function renderObjections(d) {
+  const s = el("section", {id:"panel-objections"});
+  s.appendChild(el("h2", {text:"Objection Handling: by channel, not one script"}));
+  const btnRow = el("div", {class:"subtab-row"});
+  const panelHost = el("div");
+  const items = [
+    ["call", "Cold Call", d.objections.call],
+    ["email", "Cold Email", d.objections.email],
+    ["linkedin", "LinkedIn", d.objections.linkedin],
+  ];
+  items.forEach(([id, label, list], i) => {
+    const btn = el("button", {class:"subtab-btn" + (i===0?" active":""), text:label});
+    const panel = el("div", {class:"subtab-panel" + (i===0?" active":""), id:"obj-"+id});
+    list.forEach(o => {
+      const c = el("div", {class:"card"});
+      c.appendChild(el("h3", {text:"\"" + o.objection + "\""}));
+      c.appendChild(el("p", {text: o.rebuttal}));
+      panel.appendChild(c);
+    });
+    btn.onclick = () => {
+      btnRow.querySelectorAll(".subtab-btn").forEach(b=>b.classList.remove("active"));
+      panelHost.querySelectorAll(".subtab-panel").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      panel.classList.add("active");
+    };
+    btnRow.appendChild(btn);
+    panelHost.appendChild(panel);
+  });
+  s.appendChild(btnRow);
+  s.appendChild(panelHost);
+  return s;
+}
+
+function renderAgentPrompt(d) {
+  const s = el("section", {id:"panel-agentprompt"});
+  s.appendChild(el("h2", {text:"AI Agent Operating Instructions"}));
+  s.appendChild(el("p", {text: d.agentPrompt.intro, style:"font-size:13px;color:#595959;font-style:italic;"}));
+  const c = el("div", {class:"card"});
+  c.appendChild(el("h3", {text:"System prompt (v1)"}));
+  c.appendChild(el("div", {class:"prompt-box", text: d.agentPrompt.systemPrompt}));
+  s.appendChild(c);
+
+  const rules = el("div", {class:"card"});
+  rules.appendChild(el("h3", {text:"Tone rules"}));
+  const ul1 = el("ul");
+  d.agentPrompt.toneRules.forEach(r => ul1.appendChild(el("li", {text:r})));
+  rules.appendChild(ul1);
+  s.appendChild(rules);
+
+  const never = el("div", {class:"card"});
+  never.appendChild(el("h3", {text:"The agent never"}));
+  const ul2 = el("ul");
+  d.agentPrompt.neverDo.forEach(r => ul2.appendChild(el("li", {text:r})));
+  never.appendChild(ul2);
+  s.appendChild(never);
+
+  const esc = el("div", {class:"card"});
+  esc.appendChild(el("h3", {text:"Escalate to a human when"}));
+  const ul3 = el("ul");
+  d.agentPrompt.escalation.forEach(r => ul3.appendChild(el("li", {text:r})));
+  esc.appendChild(ul3);
+  s.appendChild(esc);
+
+  const ab = el("div", {class:"card"});
+  ab.appendChild(el("h3", {text:"A/B test protocol"}));
+  ab.appendChild(el("p", {text: d.agentPrompt.abTest}));
+  s.appendChild(ab);
+  return s;
+}
+
+function renderPerformance(d) {
+  const s = el("section", {id:"panel-performance"});
+  s.appendChild(el("h2", {text:"Performance & Optimization Framework"}));
+  const table = el("table");
+  const thead = el("tr");
+  ["Metric","Definition","Why it matters"].forEach(h => thead.appendChild(el("th", {text:h})));
+  table.appendChild(thead);
+  d.performance.metrics.forEach(row => {
+    const tr = el("tr");
+    tr.appendChild(el("td", {text: row.metric}));
+    tr.appendChild(el("td", {text: row.definition}));
+    tr.appendChild(el("td", {text: row.why}));
+    table.appendChild(tr);
+  });
+  s.appendChild(table);
+
+  const loop = el("div", {class:"card"});
+  loop.appendChild(el("h3", {text:"The optimization loop"}));
+  loop.appendChild(el("p", {text: d.performance.optimizationLoop}));
+  s.appendChild(loop);
+
+  const exp = el("div", {class:"card"});
+  exp.appendChild(el("h3", {text:"Experiment backlog"}));
+  const ul = el("ul");
+  d.performance.experiments.forEach(e => ul.appendChild(el("li", {text: e.hypothesis + ". Test: " + e.test + ". Measure: " + e.measure})));
+  exp.appendChild(ul);
+  s.appendChild(exp);
+  return s;
+}
+
+function renderPlan(d) {
+  const s = el("section", {id:"panel-plan"});
+  s.appendChild(el("h2", {text:"30-60-90 Day Plan"}));
+  [["First 30 days", d.plan.day30],["Days 31-60", d.plan.day60],["Days 61-90", d.plan.day90]].forEach(([label, text]) => {
+    const c = el("div", {class:"card"});
+    c.appendChild(el("h3", {text:label}));
+    c.appendChild(el("p", {text}));
+    s.appendChild(c);
+  });
+  return s;
+}
+
+function renderSources(d) {
+  const s = el("section", {id:"panel-sources"});
+  s.appendChild(el("h2", {text:"Sources"}));
+  const ul = el("ul", {class:"source-list"});
+  d.sources.forEach(src => {
+    const li = el("li");
+    if (src.url) {
+      const a = el("a", {href: src.url, target:"_blank", rel:"noopener", text: src.text});
+      li.appendChild(a);
+    } else {
+      li.textContent = src.text;
+    }
+    ul.appendChild(li);
+  });
+  s.appendChild(ul);
+  return s;
+}
+
+function build() {
+  const d = SDR_DATA;
+  document.getElementById("hdr-title").textContent = "SDR Outbound & AI Agent Playbook: " + d.meta.company;
+  document.getElementById("hdr-sub").textContent = "Role: " + d.meta.role + "  •  Prepared by " + d.meta.candidate + "  •  " + d.meta.date;
+  document.getElementById("hdr-tier").textContent = d.meta.tier;
+  const tabs = [
+    ["thesis","Thesis", renderThesis],
+    ["personas","Personas", renderPersonas],
+    ["cadence","Cadence", renderCadence],
+    ["objections","Objections", renderObjections],
+    ["agentprompt","AI Agent Prompt", renderAgentPrompt],
+    ["performance","Performance", renderPerformance],
+    ["plan","30-60-90 Plan", renderPlan],
+    ["sources","Sources", renderSources],
+  ];
+  const nav = document.getElementById("tabs");
+  const panels = document.getElementById("panels");
+  tabs.forEach(([id,label,fn], i) => {
+    const btn = el("button", {text:label, class: i===0?"active":""});
+    const panel = fn(d);
+    panel.classList.toggle("active", i===0);
+    btn.onclick = () => {
+      nav.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      panels.querySelectorAll("section").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      panel.classList.add("active");
+    };
+    nav.appendChild(btn);
+    panels.appendChild(panel);
+  });
+}
+build();
+</script>
+</body>
+</html>
